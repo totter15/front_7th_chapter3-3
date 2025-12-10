@@ -1,4 +1,4 @@
-import { GetPostsResponse } from "../types/post"
+import { GetPostsResponse } from "../model/post"
 
 const getTagPostsApi = async ({ tag }: { tag: string }): Promise<GetPostsResponse> => {
   try {

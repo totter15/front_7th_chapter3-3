@@ -1,8 +1,8 @@
-import { Dialog } from ".."
-import HighlightText from "../HighlightText"
+import { Dialog } from "../../shared/ui"
+import HighlightText from "../../shared/ui/HighlightText"
 import Comments from "./Comments"
-import { Post } from "../../types/post"
-import { Comment } from "../../types/comment"
+import { Post } from "../../entities/post/model/post"
+import { Comment } from "../../entities/comment/model/comment"
 
 const DetailPostDialog = ({
   showPostDetailDialog,

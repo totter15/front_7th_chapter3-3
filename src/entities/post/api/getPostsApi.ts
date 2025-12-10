@@ -1,5 +1,5 @@
-import getUsersApi from "./getUsersApi"
-import { GetPostsResponse, Post } from "../types/post"
+import getUsersApi from "../../user/api/getUsersApi"
+import { GetPostsResponse, Post } from "../model/post"
 
 // TODO: getUserApi분리
 const getPostsApi = async ({

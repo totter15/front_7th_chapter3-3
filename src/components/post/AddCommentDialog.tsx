@@ -1,4 +1,4 @@
-import { Dialog, Textarea, Button } from "../index"
+import { Dialog, Textarea, Button } from "../../shared/ui/index"
 
 const AddCommentDialog = ({
   showAddCommentDialog,

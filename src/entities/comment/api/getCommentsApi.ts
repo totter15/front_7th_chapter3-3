@@ -1,4 +1,4 @@
-import { GetCommentsResponse } from "../types/comment"
+import { GetCommentsResponse } from "../model/comment"
 
 const getCommentsApi = async ({ postId }: { postId: number }): Promise<GetCommentsResponse> => {
   try {

@@ -1,4 +1,4 @@
-import { GetPostsResponse } from "../types/post"
+import { GetPostsResponse } from "../model/post"
 
 const getSearchPostsApi = async ({ searchQuery }: { searchQuery: string }): Promise<GetPostsResponse> => {
   try {

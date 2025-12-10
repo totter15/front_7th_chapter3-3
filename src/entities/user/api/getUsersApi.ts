@@ -1,4 +1,4 @@
-import { GetUsersResponse } from "../types/user.dto"
+import { GetUsersResponse } from "../model/user.dto"
 
 const getUsersApi = async (): Promise<GetUsersResponse> => {
   try {

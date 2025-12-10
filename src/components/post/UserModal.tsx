@@ -1,5 +1,5 @@
-import { Dialog } from ".."
-import { User } from "../../types/user"
+import { Dialog } from "../../shared/ui"
+import { User } from "../../entities/user/model/user"
 
 const UserModal = ({
   showUserModal,

@@ -1,5 +1,5 @@
-import { mapUserDtoToUser } from "../types/user.mapper"
-import { User } from "../types/user"
+import { mapUserDtoToUser } from "../model/user.mapper"
+import { User } from "../model/user"
 
 const getUserApi = async ({ id }: { id: number }): Promise<User | undefined> => {
   try {

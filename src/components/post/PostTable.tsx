@@ -1,8 +1,8 @@
-import { Table, Button } from "../index"
-import { Post } from "../../types/post"
-import HighlightText from "../HighlightText"
+import { Table, Button } from "../../shared/ui/index"
+import { Post } from "../../entities/post/model/post"
+import HighlightText from "../../shared/ui/HighlightText"
 import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react"
-import { User } from "../../types/user"
+import { User } from "../../entities/user/model/user"
 
 const PostTable = ({
   posts,
@@ -11,7 +11,6 @@ const PostTable = ({
   setSelectedTag,
   setShowEditDialog,
   searchQuery,
-  updateURL,
   openPostDetail,
   openUserModal,
   deletePost,
@@ -22,7 +21,6 @@ const PostTable = ({
   setSelectedTag: (tag: string) => void
   setShowEditDialog: (show: boolean) => void
   searchQuery: string
-  updateURL: () => void
   openPostDetail: (post: Post) => void
   openUserModal: (user: User) => void
   deletePost: (id: number) => void
@@ -60,7 +58,6 @@ const PostTable = ({
                       }`}
                       onClick={() => {
                         setSelectedTag(tag)
-                        updateURL()
                       }}
                     >
                       {tag}

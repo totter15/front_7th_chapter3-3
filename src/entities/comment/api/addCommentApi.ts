@@ -1,4 +1,4 @@
-import { Comment } from "../types/comment"
+import { Comment } from "../model/comment"
 
 const addCommentApi = async ({ comment }: { comment: any }): Promise<Comment | undefined> => {
   try {

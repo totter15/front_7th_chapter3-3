@@ -1,7 +1,7 @@
-import { Button } from "../index"
+import { Button } from "../../shared/ui/index"
 import { Plus } from "lucide-react"
-import { Comment } from "../../types/comment"
-import HighlightText from "../HighlightText"
+import { Comment } from "../../entities/comment/model/comment"
+import HighlightText from "../../shared/ui/HighlightText"
 import { ThumbsUp, Edit2, Trash2 } from "lucide-react"
 
 const Comments = ({

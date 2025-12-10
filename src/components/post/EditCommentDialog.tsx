@@ -1,5 +1,5 @@
-import { Dialog, Textarea, Button } from ".."
-import { Comment } from "../../types/comment"
+import { Dialog, Textarea, Button } from "../../shared/ui"
+import { Comment } from "../../entities/comment/model/comment"
 
 const EditCommentDialog = ({
   showEditCommentDialog,
