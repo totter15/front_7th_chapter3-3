@@ -7,7 +7,6 @@ import { ThumbsUp, Edit2, Trash2 } from "lucide-react"
 const Comments = ({
   postId,
   comments,
-  setNewComment,
   setShowAddCommentDialog,
   likeComment,
   deleteComment,
@@ -17,7 +16,6 @@ const Comments = ({
 }: {
   postId: number
   comments: Comment[]
-  setNewComment: (comment: { body: string; postId: number | null; userId: number }) => void
   setShowAddCommentDialog: (show: boolean) => void
   likeComment: (id: number, postId: number) => void
   deleteComment: (id: number, postId: number) => void
@@ -31,7 +29,6 @@ const Comments = ({
       <Button
         size="sm"
         onClick={() => {
-          setNewComment((prev) => ({ ...prev, postId }))
           setShowAddCommentDialog(true)
         }}
       >

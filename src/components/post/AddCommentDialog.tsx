@@ -1,18 +1,24 @@
+import { useState } from "react"
 import { Dialog, Textarea, Button } from "../../shared/ui/index"
+import { AddCommentRequest } from "../../entities/comment/model/comment"
 
 const AddCommentDialog = ({
   showAddCommentDialog,
   setShowAddCommentDialog,
-  newComment,
-  setNewComment,
   addComment,
+  postId,
 }: {
   showAddCommentDialog: boolean
   setShowAddCommentDialog: (show: boolean) => void
-  newComment: { body: string; postId: number | null; userId: number }
-  setNewComment: (comment: { body: string; postId: number | null; userId: number }) => void
-  addComment: () => void
+  addComment: (comment: AddCommentRequest) => void
+  postId: number
 }) => {
+  const [newComment, setNewComment] = useState<AddCommentRequest>({
+    body: "",
+    postId,
+    userId: 1,
+  })
+
   return (
     <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
       <Dialog.Content>
@@ -23,9 +29,9 @@ const AddCommentDialog = ({
           <Textarea
             placeholder="댓글 내용"
             value={newComment.body}
-            onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
+            onChange={(e) => setNewComment({ ...newComment, postId, body: e.target.value })}
           />
-          <Button onClick={addComment}>댓글 추가</Button>
+          <Button onClick={() => addComment(newComment)}>댓글 추가</Button>
         </div>
       </Dialog.Content>
     </Dialog>

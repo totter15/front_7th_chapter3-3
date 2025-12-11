@@ -1,6 +1,6 @@
-import { Input, Textarea, Button, Dialog } from "../../shared/ui/index"
+import { Input, Textarea, Button, Dialog } from "../../../shared/ui"
 import { useState } from "react"
-import { AddPostRequest } from "../../entities/post/model/post"
+import { AddPostRequest } from "../../../entities/post/model/post"
 
 const AddPostDialog = ({
   showAddDialog,

@@ -1,50 +1,40 @@
 import { useEffect, useState } from "react"
-import { Plus, Search } from "lucide-react"
-import { Button, Card, Input, Select } from "../shared/ui"
-import PostTable from "../components/post/PostTable"
+import { Plus } from "lucide-react"
+import { Button, Card } from "../shared/ui"
 import getTagsApi from "../entities/tag/api/getTagsApi"
-import getCommentsApi from "../entities/comment/api/getCommentsApi"
-import addCommentApi from "../entities/comment/api/addCommentApi"
-import updateCommentApi from "../entities/comment/api/updateCommentApi"
-import deleteCommentApi from "../entities/comment/api/deleteCommentApi"
-import likeCommentApi from "../entities/comment/api/likeCommentApi"
 import getUserApi from "../entities/user/api/getUserApi"
 import { Tag } from "../entities/tag/model/tag"
-import { Comment } from "../entities/comment/model/comment"
+import { Comment, AddCommentRequest } from "../entities/comment/model/comment"
 import { AddPostRequest, Post } from "../entities/post/model/post"
 import { User } from "../entities/user/model/user"
 
-import AddPostDialog from "../components/post/AddPostDialog"
-import EditPostDialog from "../components/post/EditPostDialog"
+import AddPostDialog from "../features/post/ui/AddPostDialog"
+import EditPostDialog from "../features/post/ui/EditPostDialog"
 import AddCommentDialog from "../components/post/AddCommentDialog"
 import EditCommentDialog from "../components/post/EditCommentDialog"
 import DetailPostDialog from "../components/post/DetailPostDialog"
 import UserModal from "../components/post/UserModal"
 import usePostParams from "../features/post/model/usePostParams"
 import usePost from "../features/post/model/usePost"
+import PostContent from "../widgets/post/PostContent"
+import useComment from "../features/comment/model/useComment"
 
 const PostsManager = () => {
-  // 상태 관리
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
 
-  const [tags, setTags] = useState<Tag[]>([])
-  const [comments, setComments] = useState<{ [key: number]: Comment[] }>({})
+  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<{ body: string; postId: number | null; userId: number }>({
-    body: "",
-    postId: null,
-    userId: 1,
-  })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-  const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
-  const { params: postParams, updateParams: updatePostParams } = usePostParams()
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [showUserModal, setShowUserModal] = useState(false)
+
+  const { params: postParams } = usePostParams()
+
+  const [tags, setTags] = useState<Tag[]>([])
 
   const {
     data: { posts, total, loading },
@@ -55,6 +45,8 @@ const PostsManager = () => {
     updatePost,
     deletePost,
   } = usePost()
+
+  const { comments, getComments, addComment, updateComment, deleteComment, likeComment } = useComment()
 
   // 태그 가져오기
   const fetchTags = async () => {
@@ -76,65 +68,24 @@ const PostsManager = () => {
   }
 
   // COMMENT
-  // 댓글 가져오기
-  const fetchComments = async (postId: number) => {
-    if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-    const data = await getCommentsApi({ postId })
-    setComments((prev) => ({ ...prev, [postId]: data.comments }))
-  }
-
   // 댓글 추가
-  const addComment = async () => {
-    const data = await addCommentApi({ comment: newComment })
-    if (data) {
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
-      }))
-    }
-
+  const handleAddComment = async (newComment: AddCommentRequest) => {
+    addComment(newComment)
     setShowAddCommentDialog(false)
-    setNewComment({ body: "", postId: null, userId: 1 })
   }
 
   // 댓글 업데이트
-  const updateComment = async () => {
-    const data = await updateCommentApi({ comment: selectedComment })
-    setComments((prev) => ({
-      ...prev,
-      [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
-    }))
+  const handleUpdateComment = async () => {
+    if (!selectedComment) return
+    updateComment(selectedComment)
     setShowEditCommentDialog(false)
-  }
-
-  // 댓글 삭제
-  const deleteComment = async (id: number, postId: number) => {
-    await deleteCommentApi({ id })
-    setComments((prev) => ({
-      ...prev,
-      [postId]: prev[postId].filter((comment) => comment.id !== id),
-    }))
-  }
-
-  // 댓글 좋아요
-  const likeComment = async (id: number, postId: number) => {
-    const currentComment = comments[postId].find((c) => c.id === id)
-
-    if (!currentComment) return
-    const data = await likeCommentApi({ id, likes: currentComment.likes + 1 })
-    setComments((prev) => ({
-      ...prev,
-      [postId]: prev[postId].map((comment) =>
-        comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-      ),
-    }))
   }
 
   // POST
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post)
-    fetchComments(post.id)
+    getComments(post.id)
     setShowPostDetailDialog(true)
   }
 
@@ -174,118 +125,24 @@ const PostsManager = () => {
       </Card.Header>
 
       <Card.Content>
-        <div className="flex flex-col gap-4">
-          {/* 검색 및 필터 컨트롤 */}
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="게시물 검색..."
-                  className="pl-8"
-                  value={postParams.searchQuery}
-                  onChange={(e) => updatePostParams({ searchQuery: e.target.value })}
-                  onKeyPress={(e) => e.key === "Enter" && getSearchPosts()}
-                />
-              </div>
-            </div>
-            <Select
-              value={postParams.selectedTag}
-              onValueChange={(value) => {
-                updatePostParams({ selectedTag: value })
-              }}
-            >
-              <Select.Trigger className="w-[180px]">
-                <Select.Value placeholder="태그 선택" />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Item value="all">모든 태그</Select.Item>
-                {tags.map((tag) => (
-                  <Select.Item key={tag.url} value={tag.slug}>
-                    {tag.slug}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select>
-            <Select value={postParams.sortBy} onValueChange={(value) => updatePostParams({ sortBy: value })}>
-              <Select.Trigger className="w-[180px]">
-                <Select.Value placeholder="정렬 기준" />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Item value="none">없음</Select.Item>
-                <Select.Item value="id">ID</Select.Item>
-                <Select.Item value="title">제목</Select.Item>
-                <Select.Item value="reactions">반응</Select.Item>
-              </Select.Content>
-            </Select>
-            <Select value={postParams.sortOrder} onValueChange={(value) => updatePostParams({ sortOrder: value })}>
-              <Select.Trigger className="w-[180px]">
-                <Select.Value placeholder="정렬 순서" />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Item value="asc">오름차순</Select.Item>
-                <Select.Item value="desc">내림차순</Select.Item>
-              </Select.Content>
-            </Select>
-          </div>
-
-          {/* 게시물 테이블 */}
-          {loading ? (
-            <div className="flex justify-center p-4">로딩 중...</div>
-          ) : (
-            <PostTable
-              posts={posts}
-              setSelectedPost={setSelectedPost}
-              selectedTag={postParams.selectedTag}
-              setSelectedTag={(value) => updatePostParams({ selectedTag: value })}
-              setShowEditDialog={setShowEditDialog}
-              searchQuery={postParams.searchQuery}
-              openPostDetail={openPostDetail}
-              openUserModal={openUserModal}
-              deletePost={deletePost}
-            />
-          )}
-          {/* 페이지네이션 */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span>표시</span>
-              <Select
-                value={postParams.limit.toString()}
-                onValueChange={(value) => updatePostParams({ limit: Number(value) })}
-              >
-                <Select.Trigger className="w-[180px]">
-                  <Select.Value placeholder="10" />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Item value="10">10</Select.Item>
-                  <Select.Item value="20">20</Select.Item>
-                  <Select.Item value="30">30</Select.Item>
-                </Select.Content>
-              </Select>
-              <span>항목</span>
-            </div>{" "}
-            <div className="flex gap-2">
-              <Button
-                disabled={postParams.skip === 0}
-                onClick={() => updatePostParams({ skip: Math.max(0, postParams.skip - postParams.limit) })}
-              >
-                이전
-              </Button>
-              <Button
-                disabled={postParams.skip + postParams.limit >= total}
-                onClick={() => updatePostParams({ skip: postParams.skip + postParams.limit })}
-              >
-                다음
-              </Button>
-            </div>
-          </div>
-        </div>
+        <PostContent
+          posts={posts}
+          loading={loading}
+          getSearchPosts={getSearchPosts}
+          tags={tags}
+          setSelectedPost={setSelectedPost}
+          setShowEditDialog={setShowEditDialog}
+          openPostDetail={openPostDetail}
+          openUserModal={openUserModal}
+          deletePost={deletePost}
+          total={total}
+        />
       </Card.Content>
 
-      {/* 게시물 추가 대화상자 */}
+      {/* 게시물 추가 */}
       <AddPostDialog showAddDialog={showAddDialog} setShowAddDialog={setShowAddDialog} addPost={handleAddPost} />
 
-      {/* 게시물 수정 대화상자 */}
+      {/* 게시물 수정 */}
       <EditPostDialog
         showEditDialog={showEditDialog}
         setShowEditDialog={setShowEditDialog}
@@ -294,32 +151,16 @@ const PostsManager = () => {
         updatePost={handleUpdatePost}
       />
 
-      {/* 댓글 추가 대화상자 */}
-      <AddCommentDialog
-        showAddCommentDialog={showAddCommentDialog}
-        setShowAddCommentDialog={setShowAddCommentDialog}
-        newComment={newComment}
-        setNewComment={setNewComment}
-        addComment={addComment}
-      />
+      {/* 사용자 모달 */}
+      <UserModal showUserModal={showUserModal} setShowUserModal={setShowUserModal} selectedUser={selectedUser} />
 
-      {/* 댓글 수정 대화상자 */}
-      <EditCommentDialog
-        showEditCommentDialog={showEditCommentDialog}
-        setShowEditCommentDialog={setShowEditCommentDialog}
-        selectedComment={selectedComment}
-        setSelectedComment={setSelectedComment}
-        updateComment={updateComment}
-      />
-
-      {/* 게시물 상세 보기 대화상자 */}
+      {/* 게시물 상세 보기  */}
       <DetailPostDialog
         showPostDetailDialog={showPostDetailDialog}
         setShowPostDetailDialog={setShowPostDetailDialog}
         selectedPost={selectedPost}
         searchQuery={postParams.searchQuery}
         comments={comments}
-        setNewComment={setNewComment}
         setShowAddCommentDialog={setShowAddCommentDialog}
         likeComment={likeComment}
         deleteComment={deleteComment}
@@ -327,8 +168,22 @@ const PostsManager = () => {
         setShowEditCommentDialog={setShowEditCommentDialog}
       />
 
-      {/* 사용자 모달 */}
-      <UserModal showUserModal={showUserModal} setShowUserModal={setShowUserModal} selectedUser={selectedUser} />
+      {/* 댓글 추가 */}
+      <AddCommentDialog
+        showAddCommentDialog={showAddCommentDialog}
+        setShowAddCommentDialog={setShowAddCommentDialog}
+        addComment={handleAddComment}
+        postId={selectedPost?.id ?? 0}
+      />
+
+      {/* 댓글 수정 */}
+      <EditCommentDialog
+        showEditCommentDialog={showEditCommentDialog}
+        setShowEditCommentDialog={setShowEditCommentDialog}
+        selectedComment={selectedComment}
+        setSelectedComment={setSelectedComment}
+        updateComment={handleUpdateComment}
+      />
     </Card>
   )
 }

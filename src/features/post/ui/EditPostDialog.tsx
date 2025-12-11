@@ -1,5 +1,5 @@
-import { Dialog, Input, Textarea, Button } from "../../shared/ui/index"
-import { Post } from "../../entities/post/model/post"
+import { Dialog, Input, Textarea, Button } from "../../../shared/ui"
+import { Post } from "../../../entities/post/model/post"
 
 const EditPostDialog = ({
   showEditDialog,

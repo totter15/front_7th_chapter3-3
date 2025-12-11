@@ -10,7 +10,6 @@ const DetailPostDialog = ({
   selectedPost,
   searchQuery,
   comments,
-  setNewComment,
   setShowAddCommentDialog,
   likeComment,
   deleteComment,
@@ -22,7 +21,6 @@ const DetailPostDialog = ({
   selectedPost: Post | null
   searchQuery: string
   comments: { [key: number]: Comment[] }
-  setNewComment: (comment: { body: string; postId: number | null; userId: number }) => void
   setShowAddCommentDialog: (show: boolean) => void
   likeComment: (id: number, postId: number) => void
   deleteComment: (id: number, postId: number) => void
@@ -46,7 +44,6 @@ const DetailPostDialog = ({
           <Comments
             postId={selectedPost?.id}
             comments={comments[selectedPost?.id]}
-            setNewComment={setNewComment}
             setShowAddCommentDialog={setShowAddCommentDialog}
             likeComment={likeComment}
             deleteComment={deleteComment}

@@ -1,0 +1,148 @@
+import usePostParams from "../../features/post/model/usePostParams"
+import { Input, Button } from "../../shared/ui"
+import { Select } from "../../shared/ui"
+import { Search } from "lucide-react"
+import PostTable from "../../components/post/PostTable"
+import { Post } from "../../entities/post/model/post"
+import { Tag } from "../../entities/tag/model/tag"
+import { User } from "../../entities/user/model/user"
+
+const PostContent = ({
+  posts,
+  loading,
+  getSearchPosts,
+  tags,
+  setSelectedPost,
+  setShowEditDialog,
+  openPostDetail,
+  openUserModal,
+  deletePost,
+  total,
+}: {
+  posts: Post[]
+  loading: boolean
+  getSearchPosts: () => void
+  tags: Tag[]
+  setSelectedPost: (post: Post) => void
+  setShowEditDialog: (show: boolean) => void
+  openPostDetail: (post: Post) => void
+  openUserModal: (user: User) => void
+  deletePost: (id: number) => void
+  total: number
+}) => {
+  const { params: postParams, updateParams: updatePostParams } = usePostParams()
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* 검색 및 필터 컨트롤 */}
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="게시물 검색..."
+              className="pl-8"
+              value={postParams.searchQuery}
+              onChange={(e) => updatePostParams({ searchQuery: e.target.value })}
+              onKeyPress={(e) => e.key === "Enter" && getSearchPosts()}
+            />
+          </div>
+        </div>
+        <Select
+          value={postParams.selectedTag}
+          onValueChange={(value) => {
+            updatePostParams({ selectedTag: value })
+          }}
+        >
+          <Select.Trigger className="w-[180px]">
+            <Select.Value placeholder="태그 선택" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="all">모든 태그</Select.Item>
+            {tags.map((tag) => (
+              <Select.Item key={tag.url} value={tag.slug}>
+                {tag.slug}
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select>
+
+        <Select value={postParams.sortBy} onValueChange={(value) => updatePostParams({ sortBy: value })}>
+          <Select.Trigger className="w-[180px]">
+            <Select.Value placeholder="정렬 기준" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="none">없음</Select.Item>
+            <Select.Item value="id">ID</Select.Item>
+            <Select.Item value="title">제목</Select.Item>
+            <Select.Item value="reactions">반응</Select.Item>
+          </Select.Content>
+        </Select>
+
+        <Select value={postParams.sortOrder} onValueChange={(value) => updatePostParams({ sortOrder: value })}>
+          <Select.Trigger className="w-[180px]">
+            <Select.Value placeholder="정렬 순서" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="asc">오름차순</Select.Item>
+            <Select.Item value="desc">내림차순</Select.Item>
+          </Select.Content>
+        </Select>
+      </div>
+
+      {/* 게시물 테이블 */}
+      {loading ? (
+        <div className="flex justify-center p-4">로딩 중...</div>
+      ) : (
+        <PostTable
+          posts={posts}
+          setSelectedPost={setSelectedPost}
+          selectedTag={postParams.selectedTag}
+          setSelectedTag={(value) => updatePostParams({ selectedTag: value })}
+          setShowEditDialog={setShowEditDialog}
+          searchQuery={postParams.searchQuery}
+          openPostDetail={openPostDetail}
+          openUserModal={openUserModal}
+          deletePost={deletePost}
+        />
+      )}
+
+      {/* 페이지네이션 */}
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <span>표시</span>
+          <Select
+            value={postParams.limit.toString()}
+            onValueChange={(value) => updatePostParams({ limit: Number(value) })}
+          >
+            <Select.Trigger className="w-[180px]">
+              <Select.Value placeholder="10" />
+            </Select.Trigger>
+            <Select.Content>
+              <Select.Item value="10">10</Select.Item>
+              <Select.Item value="20">20</Select.Item>
+              <Select.Item value="30">30</Select.Item>
+            </Select.Content>
+          </Select>
+          <span>항목</span>
+        </div>{" "}
+        <div className="flex gap-2">
+          <Button
+            disabled={postParams.skip === 0}
+            onClick={() => updatePostParams({ skip: Math.max(0, postParams.skip - postParams.limit) })}
+          >
+            이전
+          </Button>
+          <Button
+            disabled={postParams.skip + postParams.limit >= total}
+            onClick={() => updatePostParams({ skip: postParams.skip + postParams.limit })}
+          >
+            다음
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default PostContent
