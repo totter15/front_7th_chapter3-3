@@ -17,3 +17,9 @@ export interface Post {
   views: number
   userId: number
 }
+
+export interface AddPostRequest {
+  title: string
+  body: string
+  userId: number
+}

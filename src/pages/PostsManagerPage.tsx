@@ -2,13 +2,7 @@ import { useEffect, useState } from "react"
 import { Plus, Search } from "lucide-react"
 import { Button, Card, Input, Select } from "../shared/ui"
 import PostTable from "../components/post/PostTable"
-import getPostsApi from "../entities/post/api/getPostsApi"
 import getTagsApi from "../entities/tag/api/getTagsApi"
-import getSearchPostsApi from "../entities/post/api/getSearchPostsApi"
-import getUsersApi from "../entities/user/api/getUsersApi"
-import addPostApi from "../entities/post/api/addPostApi"
-import updatePostApi from "../entities/post/api/updatePostApi"
-import deletePostApi from "../entities/post/api/deletePostApi"
 import getCommentsApi from "../entities/comment/api/getCommentsApi"
 import addCommentApi from "../entities/comment/api/addCommentApi"
 import updateCommentApi from "../entities/comment/api/updateCommentApi"
@@ -17,8 +11,7 @@ import likeCommentApi from "../entities/comment/api/likeCommentApi"
 import getUserApi from "../entities/user/api/getUserApi"
 import { Tag } from "../entities/tag/model/tag"
 import { Comment } from "../entities/comment/model/comment"
-import { Post } from "../entities/post/model/post"
-import getTagPostsApi from "../entities/post/api/getTagPostsApi"
+import { AddPostRequest, Post } from "../entities/post/model/post"
 import { User } from "../entities/user/model/user"
 
 import AddPostDialog from "../components/post/AddPostDialog"
@@ -28,18 +21,15 @@ import EditCommentDialog from "../components/post/EditCommentDialog"
 import DetailPostDialog from "../components/post/DetailPostDialog"
 import UserModal from "../components/post/UserModal"
 import usePostParams from "../features/post/model/usePostParams"
+import usePost from "../features/post/model/usePost"
 
 const PostsManager = () => {
   // 상태 관리
-  const [posts, setPosts] = useState<Post[]>([])
-  const [total, setTotal] = useState(0)
-
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
 
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
-  const [loading, setLoading] = useState(false)
+
   const [tags, setTags] = useState<Tag[]>([])
   const [comments, setComments] = useState<{ [key: number]: Comment[] }>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
@@ -56,16 +46,15 @@ const PostsManager = () => {
 
   const { params: postParams, updateParams: updatePostParams } = usePostParams()
 
-  // 게시물 가져오기
-  const fetchPosts = async () => {
-    setLoading(true)
-
-    const postsData = await getPostsApi({ limit: postParams.limit, skip: postParams.skip })
-    setPosts(postsData.posts)
-    setTotal(postsData.total)
-
-    setLoading(false)
-  }
+  const {
+    data: { posts, total, loading },
+    getPosts,
+    getSearchPosts,
+    getTagPosts,
+    addPost,
+    updatePost,
+    deletePost,
+  } = usePost()
 
   // 태그 가져오기
   const fetchTags = async () => {
@@ -73,65 +62,17 @@ const PostsManager = () => {
     setTags(tags)
   }
 
-  // 게시물 검색
-  const searchPosts = async () => {
-    if (!postParams.searchQuery) {
-      fetchPosts()
-      return
-    }
-
-    setLoading(true)
-    const postData = await getSearchPostsApi({ searchQuery: postParams.searchQuery })
-    setPosts(postData.posts)
-    setTotal(postData.total)
-    setLoading(false)
-  }
-
-  // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === "all") {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const [postsData, usersData] = await Promise.all([getTagPostsApi({ tag }), getUsersApi()])
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error)
-    }
-    setLoading(false)
-  }
-
   // 게시물 추가
-  const addPost = async () => {
-    const data = await addPostApi({ post: newPost })
-    setPosts([data, ...posts])
+  const handleAddPost = async (newPost: AddPostRequest) => {
+    addPost(newPost)
     setShowAddDialog(false)
-    setNewPost({ title: "", body: "", userId: 1 })
   }
 
   // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      const data = await updatePostApi({ post: selectedPost })
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
-  }
-
-  // 게시물 삭제
-  const deletePost = async (id: number) => {
-    await deletePostApi({ id })
-    setPosts(posts.filter((post) => post.id !== id))
+  const handleUpdatePost = async () => {
+    if (!selectedPost) return
+    updatePost(selectedPost)
+    setShowEditDialog(false)
   }
 
   // COMMENT
@@ -208,16 +149,17 @@ const PostsManager = () => {
   }
 
   useEffect(() => {
+    getPosts()
     fetchTags()
   }, [])
 
   useEffect(() => {
     if (postParams.selectedTag) {
-      fetchPostsByTag(postParams.selectedTag)
+      getTagPosts(postParams.selectedTag)
     } else {
-      fetchPosts()
+      getPosts()
     }
-  }, [postParams])
+  }, [postParams, getTagPosts, getPosts])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -243,7 +185,7 @@ const PostsManager = () => {
                   className="pl-8"
                   value={postParams.searchQuery}
                   onChange={(e) => updatePostParams({ searchQuery: e.target.value })}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+                  onKeyPress={(e) => e.key === "Enter" && getSearchPosts()}
                 />
               </div>
             </div>
@@ -341,13 +283,7 @@ const PostsManager = () => {
       </Card.Content>
 
       {/* 게시물 추가 대화상자 */}
-      <AddPostDialog
-        showAddDialog={showAddDialog}
-        setShowAddDialog={setShowAddDialog}
-        newPost={newPost}
-        setNewPost={setNewPost}
-        addPost={addPost}
-      />
+      <AddPostDialog showAddDialog={showAddDialog} setShowAddDialog={setShowAddDialog} addPost={handleAddPost} />
 
       {/* 게시물 수정 대화상자 */}
       <EditPostDialog
@@ -355,7 +291,7 @@ const PostsManager = () => {
         setShowEditDialog={setShowEditDialog}
         selectedPost={selectedPost}
         setSelectedPost={setSelectedPost}
-        updatePost={updatePost}
+        updatePost={handleUpdatePost}
       />
 
       {/* 댓글 추가 대화상자 */}

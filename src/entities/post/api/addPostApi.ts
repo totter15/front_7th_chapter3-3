@@ -1,4 +1,6 @@
-const addPostApi = async ({ post }: { post: any }) => {
+import { AddPostRequest } from "../model/post"
+
+const addPostApi = async ({ post }: { post: AddPostRequest }) => {
   try {
     const response = await fetch("/api/posts/add", {
       method: "POST",
