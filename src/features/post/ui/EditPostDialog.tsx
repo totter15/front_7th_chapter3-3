@@ -1,12 +1,12 @@
 import { Dialog, Input, Textarea, Button } from "../../../shared/ui"
 import { Post } from "../../../entities/post/model/post"
-import usePost from "../model/usePost"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelectedPostStore } from "../model/useSelectedPostStore"
 import { useEditPostDialogStore } from "../model/useEditPostDialogStore"
+import useEditPostQuery from "../model/useEditPostQuery"
 
 const EditPostDialog = () => {
-  const { updatePost } = usePost()
+  const { updatePost } = useEditPostQuery()
   const showEditPostDialog = useEditPostDialogStore((state) => state.showDialog)
   const setShowEditPostDialog = useEditPostDialogStore((state) => state.setShowDialog)
   const selectedPost = useSelectedPostStore((state) => state.selectedPost)
@@ -14,12 +14,15 @@ const EditPostDialog = () => {
 
   const [newPost, setNewPost] = useState<Post>(selectedPost!)
 
+  useEffect(() => {
+    setNewPost(selectedPost!)
+  }, [selectedPost])
+
   const handleUpdatePost = () => {
-    updatePost(newPost)
+    updatePost({ post: newPost })
     setShowEditPostDialog(false)
     setSelectedPost(null)
   }
-
   if (!selectedPost) return <></>
 
   return (

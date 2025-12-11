@@ -13,8 +13,6 @@ import AddCommentDialog from "../../features/comment/ui/AddCommentDialog"
 import EditCommentDialog from "../../features/comment/ui/EditCommentDialog"
 import DetailPostDialog from "./DetailPostDialog"
 import UserModal from "../../entities/user/ui/UserModal"
-import usePostParams from "../../features/post/model/usePostParams"
-import usePost from "../../features/post/model/usePost"
 import PostContent from "../../widgets/post/PostContent"
 import useComment from "../../features/comment/model/useComment"
 import { useAddPostDialogStore } from "../../features/post/model/useAddPostDialogStore"
@@ -29,11 +27,7 @@ const PostsManager = () => {
   const [showUserModal, setShowUserModal] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
 
-  const { params: postParams } = usePostParams()
-
   const [tags, setTags] = useState<Tag[]>([])
-
-  const { getPosts, getTagPosts } = usePost()
 
   const { comments, getComments } = useComment()
 
@@ -62,17 +56,8 @@ const PostsManager = () => {
   }
 
   useEffect(() => {
-    getPosts()
     fetchTags()
   }, [])
-
-  useEffect(() => {
-    if (postParams.selectedTag) {
-      getTagPosts(postParams.selectedTag)
-    } else {
-      getPosts()
-    }
-  }, [postParams, getTagPosts, getPosts])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">

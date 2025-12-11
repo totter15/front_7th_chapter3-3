@@ -1,8 +1,8 @@
-import { Dialog, Textarea, Button } from "../../shared/ui"
-import { Comment } from "../../entities/comment/model/comment"
-import { useEditCommentDialogStore } from "../../features/comment/model/useEditCommentDialogStore"
-import useComment from "../../features/comment/model/useComment"
+import { Dialog, Textarea, Button } from "../../../shared/ui"
+import { Comment } from "../../../entities/comment/model/comment"
+import { useEditCommentDialogStore } from "../model/useEditCommentDialogStore"
 import { useState } from "react"
+import useComment from "../model/useComment"
 
 const EditCommentDialog = ({}: {}) => {
   const showEditCommentDialog = useEditCommentDialogStore((state) => state.showDialog)

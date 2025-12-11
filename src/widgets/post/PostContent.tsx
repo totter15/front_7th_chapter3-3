@@ -2,11 +2,13 @@ import usePostParams from "../../features/post/model/usePostParams"
 import { Input, Button } from "../../shared/ui"
 import { Select } from "../../shared/ui"
 import { Search } from "lucide-react"
-import PostTable from "../../components/post/PostTable"
+import PostTable from "./PostTable"
 import { Post } from "../../entities/post/model/post"
 import { Tag } from "../../entities/tag/model/tag"
 import { User } from "../../entities/user/model/user"
-import usePost from "../../features/post/model/usePost"
+import usePostWithParams from "../../features/post/model/usePostWithParams"
+import { useEffect, useState } from "react"
+import useDeletePostQuery from "../../features/post/model/useDeletePostQuery"
 
 const PostContent = ({
   tags,
@@ -17,13 +19,15 @@ const PostContent = ({
   openPostDetail: (post: Post) => void
   openUserModal: (user: User) => void
 }) => {
-  const {
-    data: { posts, total, loading },
-    getSearchPosts,
-    deletePost,
-  } = usePost()
+  const { data: posts, isLoading } = usePostWithParams()
+  const { mutate: deletePost } = useDeletePostQuery()
 
   const { params: postParams, updateParams: updatePostParams } = usePostParams()
+  const [searchQuery, setSearchQuery] = useState("")
+
+  useEffect(() => {
+    setSearchQuery(postParams.searchQuery)
+  }, [postParams.searchQuery])
 
   return (
     <div className="flex flex-col gap-4">
@@ -35,9 +39,9 @@ const PostContent = ({
             <Input
               placeholder="게시물 검색..."
               className="pl-8"
-              value={postParams.searchQuery}
-              onChange={(e) => updatePostParams({ searchQuery: e.target.value })}
-              onKeyPress={(e) => e.key === "Enter" && getSearchPosts()}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && updatePostParams({ searchQuery: searchQuery })}
             />
           </div>
         </div>
@@ -84,11 +88,11 @@ const PostContent = ({
       </div>
 
       {/* 게시물 테이블 */}
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center p-4">로딩 중...</div>
       ) : (
         <PostTable
-          posts={posts}
+          posts={posts.posts}
           selectedTag={postParams.selectedTag}
           setSelectedTag={(value) => updatePostParams({ selectedTag: value })}
           openPostDetail={openPostDetail}
@@ -124,7 +128,7 @@ const PostContent = ({
             이전
           </Button>
           <Button
-            disabled={postParams.skip + postParams.limit >= total}
+            disabled={postParams.skip + postParams.limit >= posts.total}
             onClick={() => updatePostParams({ skip: postParams.skip + postParams.limit })}
           >
             다음

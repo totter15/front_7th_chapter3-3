@@ -16,6 +16,11 @@ export interface Post {
   }
   views: number
   userId: number
+  author?: {
+    id: number
+    username: string
+    image: string
+  }
 }
 
 export interface AddPostRequest {

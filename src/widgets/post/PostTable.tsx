@@ -20,7 +20,7 @@ const PostTable = ({
   setSelectedTag: (tag: string) => void
   openPostDetail: (post: Post) => void
   openUserModal: (user: User) => void
-  deletePost: (id: number) => void
+  deletePost: ({ id }: { id: number }) => void
 }) => {
   const { params } = usePostParams()
   const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost)
@@ -73,7 +73,10 @@ const PostTable = ({
               </div>
             </Table.Cell>
             <Table.Cell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => openUserModal(post.author as User)}
+              >
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
@@ -94,7 +97,7 @@ const PostTable = ({
                 <Button variant="ghost" size="sm" onClick={() => handleSetSelectedPost(post)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => deletePost({ id: post.id })}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

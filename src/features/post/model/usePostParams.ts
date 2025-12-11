@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
 
-interface PostParams {
+export interface PostParams {
   skip: number
   limit: number
   searchQuery: string

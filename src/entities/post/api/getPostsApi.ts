@@ -1,7 +1,6 @@
 import getUsersApi from "../../user/api/getUsersApi"
 import { GetPostsResponse, Post } from "../model/post"
 
-// TODO: getUserApi분리
 const getPostsApi = async ({
   limit,
   skip,

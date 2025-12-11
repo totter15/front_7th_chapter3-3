@@ -1,8 +1,16 @@
 import { GetPostsResponse } from "../model/post"
 
-const getSearchPostsApi = async ({ searchQuery }: { searchQuery: string }): Promise<GetPostsResponse> => {
+const getSearchPostsApi = async ({
+  searchQuery,
+  limit,
+  skip,
+}: {
+  searchQuery: string
+  limit: number
+  skip: number
+}): Promise<GetPostsResponse> => {
   try {
-    const response = await fetch(`/api/posts/search?q=${searchQuery}`)
+    const response = await fetch(`/api/posts/search?q=${searchQuery}&limit=${limit}&skip=${skip}`)
     const data: GetPostsResponse = await response.json()
 
     return data

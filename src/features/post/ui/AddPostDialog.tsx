@@ -2,17 +2,17 @@ import { Input, Textarea, Button, Dialog } from "../../../shared/ui"
 import { useState } from "react"
 import { AddPostRequest } from "../../../entities/post/model/post"
 import { useAddPostDialogStore } from "../model/useAddPostDialogStore"
-import usePost from "../model/usePost"
+import useAddPostQuery from "../model/useAddPostQuery"
 
 const AddPostDialog = () => {
-  const { addPost } = usePost()
+  const { addPost } = useAddPostQuery()
   const showAddPostDialog = useAddPostDialogStore((state) => state.showDialog)
   const setShowAddPostDialog = useAddPostDialogStore((state) => state.setShowDialog)
 
   const [newPost, setNewPost] = useState<AddPostRequest>({ title: "", body: "", userId: 1 })
 
   const handleAddPost = () => {
-    addPost(newPost)
+    addPost({ post: newPost })
     setShowAddPostDialog(false)
     setNewPost({ title: "", body: "", userId: 1 })
   }

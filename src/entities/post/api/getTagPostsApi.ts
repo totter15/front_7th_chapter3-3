@@ -1,8 +1,16 @@
 import { GetPostsResponse } from "../model/post"
 
-const getTagPostsApi = async ({ tag }: { tag: string }): Promise<GetPostsResponse> => {
+const getTagPostsApi = async ({
+  tag,
+  limit,
+  skip,
+}: {
+  tag: string
+  limit: number
+  skip: number
+}): Promise<GetPostsResponse> => {
   try {
-    const response = await fetch(`/api/posts/tag/${tag}`)
+    const response = await fetch(`/api/posts/tag/${tag}?limit=${limit}&skip=${skip}`)
     const data = await response.json()
     return data
   } catch (error) {
