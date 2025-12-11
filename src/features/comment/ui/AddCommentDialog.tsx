@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { Dialog, Textarea, Button } from "../../shared/ui/index"
-import { AddCommentRequest } from "../../entities/comment/model/comment"
-import { useAddCommentDialogStore } from "../../features/comment/model/useAddCommentDialogStore"
-import useComment from "../../features/comment/model/useComment"
+import { Dialog, Textarea, Button } from "../../../shared/ui/index"
+import { AddCommentRequest } from "../../../entities/comment/model/comment"
+import { useAddCommentDialogStore } from "../model/useAddCommentDialogStore"
+import useComment from "../model/useComment"
 
 const AddCommentDialog = ({ postId }: { postId: number }) => {
   const { addComment } = useComment()
