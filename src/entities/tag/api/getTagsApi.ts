@@ -1,4 +1,4 @@
-import { Tag } from "../types/tag"
+import { Tag } from "../model/tag"
 
 const getTagsApi = async (): Promise<Tag[] | []> => {
   try {

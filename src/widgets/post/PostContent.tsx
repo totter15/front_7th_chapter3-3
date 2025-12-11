@@ -4,25 +4,22 @@ import { Select } from "../../shared/ui"
 import { Search } from "lucide-react"
 import PostTable from "./PostTable"
 import { Post } from "../../entities/post/model/post"
-import { Tag } from "../../entities/tag/model/tag"
 import { User } from "../../entities/user/model/user"
 import usePostWithParams from "../../features/post/model/usePostWithParams"
 import { useEffect, useState } from "react"
-import useDeletePostQuery from "../../features/post/model/useDeletePostQuery"
+import useTagQuery from "../../entities/tag/model/useTagQuery"
 
 const PostContent = ({
-  tags,
   openPostDetail,
   openUserModal,
 }: {
-  tags: Tag[]
   openPostDetail: (post: Post) => void
   openUserModal: (user: User) => void
 }) => {
+  const { data: tags = [] } = useTagQuery()
   const { data: posts, isLoading } = usePostWithParams()
-  const { mutate: deletePost } = useDeletePostQuery()
-
   const { params: postParams, updateParams: updatePostParams } = usePostParams()
+
   const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
@@ -91,14 +88,7 @@ const PostContent = ({
       {isLoading ? (
         <div className="flex justify-center p-4">로딩 중...</div>
       ) : (
-        <PostTable
-          posts={posts.posts}
-          selectedTag={postParams.selectedTag}
-          setSelectedTag={(value) => updatePostParams({ selectedTag: value })}
-          openPostDetail={openPostDetail}
-          openUserModal={openUserModal}
-          deletePost={deletePost}
-        />
+        <PostTable posts={posts.posts} openPostDetail={openPostDetail} openUserModal={openUserModal} />
       )}
 
       {/* 페이지네이션 */}

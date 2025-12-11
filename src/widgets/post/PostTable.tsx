@@ -6,25 +6,21 @@ import { User } from "../../entities/user/model/user"
 import { useSelectedPostStore } from "../../features/post/model/useSelectedPostStore"
 import { useEditPostDialogStore } from "../../features/post/model/useEditPostDialogStore"
 import usePostParams from "../../features/post/model/usePostParams"
+import useDeletePostQuery from "../../features/post/model/useDeletePostQuery"
 
 const PostTable = ({
   posts,
-  selectedTag,
-  setSelectedTag,
   openPostDetail,
   openUserModal,
-  deletePost,
 }: {
   posts: Post[]
-  selectedTag: string
-  setSelectedTag: (tag: string) => void
   openPostDetail: (post: Post) => void
   openUserModal: (user: User) => void
-  deletePost: ({ id }: { id: number }) => void
 }) => {
-  const { params } = usePostParams()
+  const { params, updateParams } = usePostParams()
   const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost)
   const setShowEditDialog = useEditPostDialogStore((state) => state.setShowDialog)
+  const { mutate: deletePost } = useDeletePostQuery()
 
   const handleSetSelectedPost = (post: Post) => {
     setSelectedPost(post)
@@ -58,12 +54,12 @@ const PostTable = ({
                     <span
                       key={tag}
                       className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                        selectedTag === tag
+                        params.selectedTag === tag
                           ? "text-white bg-blue-500 hover:bg-blue-600"
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
                       onClick={() => {
-                        setSelectedTag(tag)
+                        updateParams({ selectedTag: tag })
                       }}
                     >
                       {tag}

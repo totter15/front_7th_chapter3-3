@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button, Card } from "../../shared/ui"
-import getTagsApi from "../../entities/tag/api/getTagsApi"
 import getUserApi from "../../entities/user/api/getUserApi"
-import { Tag } from "../../entities/tag/model/tag"
 import { Post } from "../../entities/post/model/post"
 import { User } from "../../entities/user/model/user"
 
@@ -26,15 +24,6 @@ const PostsManager = () => {
   const [showUserModal, setShowUserModal] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
 
-  const [tags, setTags] = useState<Tag[]>([])
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    const tags = await getTagsApi()
-    setTags(tags)
-  }
-
-  // POST
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post)
@@ -51,10 +40,6 @@ const PostsManager = () => {
     }
   }
 
-  useEffect(() => {
-    fetchTags()
-  }, [])
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <Card.Header>
@@ -68,7 +53,7 @@ const PostsManager = () => {
       </Card.Header>
 
       <Card.Content>
-        <PostContent tags={tags} openPostDetail={openPostDetail} openUserModal={openUserModal} />
+        <PostContent openPostDetail={openPostDetail} openUserModal={openUserModal} />
       </Card.Content>
 
       {/* 게시물 상세 보기  */}

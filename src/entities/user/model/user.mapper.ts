@@ -11,4 +11,5 @@ export const mapUserDtoToUser = (dto: GetUserResponse): User => ({
   username: dto.username,
   address: dto.address,
   company: dto.company,
+  image: dto.image,
 })
