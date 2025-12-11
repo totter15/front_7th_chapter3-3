@@ -1,9 +1,10 @@
 import { mapUserDtoToUser } from "../model/user.mapper"
 import { User } from "../model/user"
+import { getApiUrl } from "../../../shared/api/apiClient"
 
 const getUserApi = async ({ id }: { id: number }): Promise<User | undefined> => {
   try {
-    const response = await fetch(`/api/users/${id}`)
+    const response = await fetch(getApiUrl(`/users/${id}`))
     const data = await response.json()
     return mapUserDtoToUser(data)
   } catch (error) {

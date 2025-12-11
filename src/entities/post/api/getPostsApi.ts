@@ -1,5 +1,6 @@
 import getUsersApi from "../../user/api/getUsersApi"
 import { GetPostsResponse, Post } from "../model/post"
+import { getApiUrl } from "../../../shared/api/apiClient"
 
 const getPostsApi = async ({
   limit,
@@ -14,7 +15,7 @@ const getPostsApi = async ({
   limit: number
 }> => {
   try {
-    const postResponse = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
+    const postResponse = await fetch(getApiUrl(`/posts?limit=${limit}&skip=${skip}`))
     const postsData: GetPostsResponse = await postResponse.json()
 
     const { users: usersData } = await getUsersApi()

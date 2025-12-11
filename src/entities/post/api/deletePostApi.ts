@@ -1,6 +1,8 @@
+import { getApiUrl } from "../../../shared/api/apiClient"
+
 const deletePostApi = async ({ id }: { id: number }) => {
   try {
-    const response = await fetch(`/api/posts/${id}`, {
+    const response = await fetch(getApiUrl(`/posts/${id}`), {
       method: "DELETE",
     })
     const data = await response.json()

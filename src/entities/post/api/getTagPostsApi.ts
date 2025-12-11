@@ -1,4 +1,5 @@
 import { GetPostsResponse } from "../model/post"
+import { getApiUrl } from "../../../shared/api/apiClient"
 
 const getTagPostsApi = async ({
   tag,
@@ -10,7 +11,7 @@ const getTagPostsApi = async ({
   skip: number
 }): Promise<GetPostsResponse> => {
   try {
-    const response = await fetch(`/api/posts/tag/${tag}?limit=${limit}&skip=${skip}`)
+    const response = await fetch(getApiUrl(`/posts/tag/${tag}?limit=${limit}&skip=${skip}`))
     const data = await response.json()
     return data
   } catch (error) {

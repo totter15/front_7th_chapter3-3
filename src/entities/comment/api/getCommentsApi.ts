@@ -1,8 +1,9 @@
 import { GetCommentsResponse } from "../model/comment"
+import { getApiUrl } from "../../../shared/api/apiClient"
 
 const getCommentsApi = async ({ postId }: { postId: number }): Promise<GetCommentsResponse> => {
   try {
-    const response = await fetch(`/api/comments/post/${postId}`)
+    const response = await fetch(getApiUrl(`/comments/post/${postId}`))
     const data = await response.json()
     return data
   } catch (error) {

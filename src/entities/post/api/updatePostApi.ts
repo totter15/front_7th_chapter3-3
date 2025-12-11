@@ -1,6 +1,8 @@
+import { getApiUrl } from "../../../shared/api/apiClient"
+
 const updatePostApi = async ({ post }: { post: any }) => {
   try {
-    const response = await fetch(`/api/posts/${post.id}`, {
+    const response = await fetch(getApiUrl(`/posts/${post.id}`), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(post),

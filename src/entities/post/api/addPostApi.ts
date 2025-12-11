@@ -1,8 +1,9 @@
 import { AddPostRequest } from "../model/post"
+import { getApiUrl } from "../../../shared/api/apiClient"
 
 const addPostApi = async ({ post }: { post: AddPostRequest }) => {
   try {
-    const response = await fetch("/api/posts/add", {
+    const response = await fetch(getApiUrl("/posts/add"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(post),

@@ -1,6 +1,8 @@
+import { getApiUrl } from "../../../shared/api/apiClient"
+
 const updateCommentApi = async ({ comment }: { comment: any }) => {
   try {
-    const response = await fetch(`/api/comments/${comment.id}`, {
+    const response = await fetch(getApiUrl(`/comments/${comment.id}`), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ body: comment.body }),

@@ -1,6 +1,8 @@
+import { getApiUrl } from "../../../shared/api/apiClient"
+
 const likeCommentApi = async ({ id, likes }: { id: number; likes: number }) => {
   try {
-    const response = await fetch(`/api/comments/${id}`, {
+    const response = await fetch(getApiUrl(`/comments/${id}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ likes }),

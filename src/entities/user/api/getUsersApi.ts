@@ -1,8 +1,9 @@
 import { GetUsersResponse } from "../model/user.dto"
+import { getApiUrl } from "../../../shared/api/apiClient"
 
 const getUsersApi = async (): Promise<GetUsersResponse> => {
   try {
-    const response = await fetch("/api/users?limit=0&select=username,image")
+    const response = await fetch(getApiUrl("/users?limit=0&select=username,image"))
     const data = await response.json()
     return data
   } catch (error) {

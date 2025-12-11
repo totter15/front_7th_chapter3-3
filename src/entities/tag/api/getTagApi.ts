@@ -1,8 +1,9 @@
 import { Tag } from "../model/tag"
+import { getApiUrl } from "../../../shared/api/apiClient"
 
 const getTagApi = async ({ tag }: { tag: string }): Promise<Tag[]> => {
   try {
-    const response = await fetch(`/api/posts/tag/${tag}`)
+    const response = await fetch(getApiUrl(`/posts/tag/${tag}`))
     const data = await response.json()
     return data
   } catch (error) {

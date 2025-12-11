@@ -1,6 +1,8 @@
+import { getApiUrl } from "../../../shared/api/apiClient"
+
 const deleteCommentApi = async ({ id }: { id: number }) => {
   try {
-    const response = await fetch(`/api/comments/${id}`, {
+    const response = await fetch(getApiUrl(`/comments/${id}`), {
       method: "DELETE",
     })
     const data = await response.json()
