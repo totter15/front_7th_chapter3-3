@@ -3,28 +3,34 @@ import { Post } from "../../entities/post/model/post"
 import HighlightText from "../../shared/ui/HighlightText"
 import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react"
 import { User } from "../../entities/user/model/user"
+import { useSelectedPostStore } from "../../features/post/model/useSelectedPostStore"
+import { useEditPostDialogStore } from "../../features/post/model/useEditPostDialogStore"
+import usePostParams from "../../features/post/model/usePostParams"
 
 const PostTable = ({
   posts,
-  setSelectedPost,
   selectedTag,
   setSelectedTag,
-  setShowEditDialog,
-  searchQuery,
   openPostDetail,
   openUserModal,
   deletePost,
 }: {
   posts: Post[]
-  setSelectedPost: (post: Post) => void
   selectedTag: string
   setSelectedTag: (tag: string) => void
-  setShowEditDialog: (show: boolean) => void
-  searchQuery: string
   openPostDetail: (post: Post) => void
   openUserModal: (user: User) => void
   deletePost: (id: number) => void
 }) => {
+  const { params } = usePostParams()
+  const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost)
+  const setShowEditDialog = useEditPostDialogStore((state) => state.setShowDialog)
+
+  const handleSetSelectedPost = (post: Post) => {
+    setSelectedPost(post)
+    setShowEditDialog(true)
+  }
+
   return (
     <Table>
       <Table.Header>
@@ -44,7 +50,7 @@ const PostTable = ({
             <Table.Cell>
               <div className="space-y-1">
                 <div>
-                  <HighlightText text={post.title} highlight={searchQuery} />
+                  <HighlightText text={post.title} highlight={params.searchQuery} />
                 </div>
 
                 <div className="flex flex-wrap gap-1">
@@ -85,14 +91,7 @@ const PostTable = ({
                 <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedPost(post)
-                    setShowEditDialog(true)
-                  }}
-                >
+                <Button variant="ghost" size="sm" onClick={() => handleSetSelectedPost(post)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>

@@ -6,30 +6,23 @@ import PostTable from "../../components/post/PostTable"
 import { Post } from "../../entities/post/model/post"
 import { Tag } from "../../entities/tag/model/tag"
 import { User } from "../../entities/user/model/user"
+import usePost from "../../features/post/model/usePost"
 
 const PostContent = ({
-  posts,
-  loading,
-  getSearchPosts,
   tags,
-  setSelectedPost,
-  setShowEditDialog,
   openPostDetail,
   openUserModal,
-  deletePost,
-  total,
 }: {
-  posts: Post[]
-  loading: boolean
-  getSearchPosts: () => void
   tags: Tag[]
-  setSelectedPost: (post: Post) => void
-  setShowEditDialog: (show: boolean) => void
   openPostDetail: (post: Post) => void
   openUserModal: (user: User) => void
-  deletePost: (id: number) => void
-  total: number
 }) => {
+  const {
+    data: { posts, total, loading },
+    getSearchPosts,
+    deletePost,
+  } = usePost()
+
   const { params: postParams, updateParams: updatePostParams } = usePostParams()
 
   return (
@@ -96,11 +89,8 @@ const PostContent = ({
       ) : (
         <PostTable
           posts={posts}
-          setSelectedPost={setSelectedPost}
           selectedTag={postParams.selectedTag}
           setSelectedTag={(value) => updatePostParams({ selectedTag: value })}
-          setShowEditDialog={setShowEditDialog}
-          searchQuery={postParams.searchQuery}
           openPostDetail={openPostDetail}
           openUserModal={openUserModal}
           deletePost={deletePost}

@@ -1,20 +1,23 @@
 import { Input, Textarea, Button, Dialog } from "../../../shared/ui"
 import { useState } from "react"
 import { AddPostRequest } from "../../../entities/post/model/post"
+import { useAddPostDialogStore } from "../model/useAddPostDialogStore"
+import usePost from "../model/usePost"
 
-const AddPostDialog = ({
-  showAddDialog,
-  setShowAddDialog,
-  addPost,
-}: {
-  showAddDialog: boolean
-  setShowAddDialog: (show: boolean) => void
-  addPost: (newPost: AddPostRequest) => void
-}) => {
+const AddPostDialog = () => {
+  const { addPost } = usePost()
+  const showAddPostDialog = useAddPostDialogStore((state) => state.showDialog)
+  const setShowAddPostDialog = useAddPostDialogStore((state) => state.setShowDialog)
+
   const [newPost, setNewPost] = useState<AddPostRequest>({ title: "", body: "", userId: 1 })
 
+  const handleAddPost = () => {
+    addPost(newPost)
+    setShowAddPostDialog(false)
+    setNewPost({ title: "", body: "", userId: 1 })
+  }
   return (
-    <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+    <Dialog open={showAddPostDialog} onOpenChange={setShowAddPostDialog}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>새 게시물 추가</Dialog.Title>
@@ -37,7 +40,7 @@ const AddPostDialog = ({
             value={newPost.userId}
             onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
           />
-          <Button onClick={() => addPost(newPost)}>게시물 추가</Button>
+          <Button onClick={handleAddPost}>게시물 추가</Button>
         </div>
       </Dialog.Content>
     </Dialog>

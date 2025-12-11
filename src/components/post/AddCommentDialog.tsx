@@ -1,23 +1,25 @@
 import { useState } from "react"
 import { Dialog, Textarea, Button } from "../../shared/ui/index"
 import { AddCommentRequest } from "../../entities/comment/model/comment"
+import { useAddCommentDialogStore } from "../../features/comment/model/useAddCommentDialogStore"
+import useComment from "../../features/comment/model/useComment"
 
-const AddCommentDialog = ({
-  showAddCommentDialog,
-  setShowAddCommentDialog,
-  addComment,
-  postId,
-}: {
-  showAddCommentDialog: boolean
-  setShowAddCommentDialog: (show: boolean) => void
-  addComment: (comment: AddCommentRequest) => void
-  postId: number
-}) => {
+const AddCommentDialog = ({ postId }: { postId: number }) => {
+  const { addComment } = useComment()
+  const showAddCommentDialog = useAddCommentDialogStore((state) => state.showDialog)
+  const setShowAddCommentDialog = useAddCommentDialogStore((state) => state.setShowDialog)
+
   const [newComment, setNewComment] = useState<AddCommentRequest>({
     body: "",
     postId,
     userId: 1,
   })
+
+  const handleAddComment = () => {
+    addComment(newComment)
+    setShowAddCommentDialog(false)
+    setNewComment({ body: "", postId, userId: 1 })
+  }
 
   return (
     <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
@@ -31,7 +33,7 @@ const AddCommentDialog = ({
             value={newComment.body}
             onChange={(e) => setNewComment({ ...newComment, postId, body: e.target.value })}
           />
-          <Button onClick={() => addComment(newComment)}>댓글 추가</Button>
+          <Button onClick={handleAddComment}>댓글 추가</Button>
         </div>
       </Dialog.Content>
     </Dialog>

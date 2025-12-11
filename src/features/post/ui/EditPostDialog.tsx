@@ -1,23 +1,29 @@
 import { Dialog, Input, Textarea, Button } from "../../../shared/ui"
 import { Post } from "../../../entities/post/model/post"
+import usePost from "../model/usePost"
+import { useState } from "react"
+import { useSelectedPostStore } from "../model/useSelectedPostStore"
+import { useEditPostDialogStore } from "../model/useEditPostDialogStore"
 
-const EditPostDialog = ({
-  showEditDialog,
-  setShowEditDialog,
-  selectedPost,
-  setSelectedPost,
-  updatePost,
-}: {
-  showEditDialog: boolean
-  setShowEditDialog: (show: boolean) => void
-  selectedPost: Post | null
-  setSelectedPost: (post: Post) => void
-  updatePost: () => void
-}) => {
+const EditPostDialog = () => {
+  const { updatePost } = usePost()
+  const showEditPostDialog = useEditPostDialogStore((state) => state.showDialog)
+  const setShowEditPostDialog = useEditPostDialogStore((state) => state.setShowDialog)
+  const selectedPost = useSelectedPostStore((state) => state.selectedPost)
+  const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost)
+
+  const [newPost, setNewPost] = useState<Post>(selectedPost!)
+
+  const handleUpdatePost = () => {
+    updatePost(newPost)
+    setShowEditPostDialog(false)
+    setSelectedPost(null)
+  }
+
   if (!selectedPost) return <></>
 
   return (
-    <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+    <Dialog open={showEditPostDialog} onOpenChange={setShowEditPostDialog}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>게시물 수정</Dialog.Title>
@@ -25,16 +31,16 @@ const EditPostDialog = ({
         <div className="space-y-4">
           <Input
             placeholder="제목"
-            value={selectedPost?.title || ""}
-            onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
+            value={newPost?.title || ""}
+            onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
           />
           <Textarea
             rows={15}
             placeholder="내용"
-            value={selectedPost?.body || ""}
-            onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
+            value={newPost?.body || ""}
+            onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
           />
-          <Button onClick={updatePost}>게시물 업데이트</Button>
+          <Button onClick={handleUpdatePost}>게시물 업데이트</Button>
         </div>
       </Dialog.Content>
     </Dialog>
