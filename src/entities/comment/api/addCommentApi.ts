@@ -1,6 +1,6 @@
-import { Comment } from "../model/comment"
+import { AddCommentRequest, Comment } from "../model/comment"
 
-const addCommentApi = async ({ comment }: { comment: any }): Promise<Comment | undefined> => {
+const addCommentApi = async ({ comment }: { comment: AddCommentRequest }): Promise<Comment | undefined> => {
   try {
     const response = await fetch(`/api/comments/add`, {
       method: "POST",

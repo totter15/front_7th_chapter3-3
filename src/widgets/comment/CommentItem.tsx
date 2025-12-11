@@ -5,18 +5,20 @@ import { ThumbsUp } from "lucide-react"
 import { Edit2 } from "lucide-react"
 import { Trash2 } from "lucide-react"
 import usePostParams from "../../features/post/model/usePostParams"
-import useComment from "../../features/comment/model/useComment"
+import useLikeCommentQuery from "../../features/comment/model/useLikeCommentQuery"
+import useDeleteCommentQuery from "../../features/comment/model/useDeleteCommentQuery"
 import { useEditCommentDialogStore } from "../../features/comment/model/useEditCommentDialogStore"
 
 const CommentItem = ({ comment }: { comment: Comment }) => {
   const { params } = usePostParams()
-  const { likeComment, deleteComment } = useComment()
+  const { likeComment } = useLikeCommentQuery()
+  const { deleteComment } = useDeleteCommentQuery()
 
   const setShowEditDialog = useEditCommentDialogStore((state) => state.setShowDialog)
   const setSelectedComment = useEditCommentDialogStore((state) => state.setSelectedComment)
 
   const handleLikeComment = () => {
-    likeComment(comment.id, comment.postId)
+    likeComment({ id: comment.id, postId: comment.postId, likes: comment.likes + 1 })
   }
 
   const handleEditComment = () => {
@@ -24,7 +26,7 @@ const CommentItem = ({ comment }: { comment: Comment }) => {
     setShowEditDialog(true)
   }
   const handleDeleteComment = () => {
-    deleteComment(comment.id, comment.postId)
+    deleteComment({ id: comment.id, postId: comment.postId })
   }
 
   return (

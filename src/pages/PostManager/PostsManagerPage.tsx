@@ -14,7 +14,6 @@ import EditCommentDialog from "../../features/comment/ui/EditCommentDialog"
 import DetailPostDialog from "./DetailPostDialog"
 import UserModal from "../../entities/user/ui/UserModal"
 import PostContent from "../../widgets/post/PostContent"
-import useComment from "../../features/comment/model/useComment"
 import { useAddPostDialogStore } from "../../features/post/model/useAddPostDialogStore"
 import { useSelectedPostStore } from "../../features/post/model/useSelectedPostStore"
 
@@ -29,8 +28,6 @@ const PostsManager = () => {
 
   const [tags, setTags] = useState<Tag[]>([])
 
-  const { comments, getComments } = useComment()
-
   // 태그 가져오기
   const fetchTags = async () => {
     const tags = await getTagsApi()
@@ -41,7 +38,6 @@ const PostsManager = () => {
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post)
-    getComments(post.id)
     setShowPostDetailDialog(true)
   }
 
@@ -76,11 +72,7 @@ const PostsManager = () => {
       </Card.Content>
 
       {/* 게시물 상세 보기  */}
-      <DetailPostDialog
-        showPostDetailDialog={showPostDetailDialog}
-        setShowPostDetailDialog={setShowPostDetailDialog}
-        comments={comments}
-      />
+      <DetailPostDialog showPostDetailDialog={showPostDetailDialog} setShowPostDetailDialog={setShowPostDetailDialog} />
 
       {/* 댓글 추가 */}
       <AddCommentDialog postId={selectedPost?.id ?? 0} />

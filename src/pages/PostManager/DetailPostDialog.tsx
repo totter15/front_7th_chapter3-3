@@ -1,21 +1,19 @@
 import { Dialog } from "../../shared/ui"
 import HighlightText from "../../shared/ui/HighlightText"
 import Comments from "../../widgets/comment/Comments"
-import { Comment } from "../../entities/comment/model/comment"
 import { useSelectedPostStore } from "../../features/post/model/useSelectedPostStore"
 import usePostParams from "../../features/post/model/usePostParams"
 
 const DetailPostDialog = ({
   showPostDetailDialog,
   setShowPostDetailDialog,
-  comments,
 }: {
   showPostDetailDialog: boolean
   setShowPostDetailDialog: (show: boolean) => void
-  comments: { [key: number]: Comment[] }
 }) => {
   const { params } = usePostParams()
   const selectedPost = useSelectedPostStore((state) => state.selectedPost)
+
   if (!selectedPost) return <></>
 
   return (
@@ -30,7 +28,7 @@ const DetailPostDialog = ({
           <p>
             <HighlightText text={selectedPost?.body} highlight={params.searchQuery} />
           </p>
-          <Comments comments={comments[selectedPost?.id]} />
+          <Comments postId={selectedPost?.id || 0} />
         </div>
       </Dialog.Content>
     </Dialog>

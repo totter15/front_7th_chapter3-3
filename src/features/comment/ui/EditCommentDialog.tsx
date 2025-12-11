@@ -1,19 +1,23 @@
 import { Dialog, Textarea, Button } from "../../../shared/ui"
 import { Comment } from "../../../entities/comment/model/comment"
 import { useEditCommentDialogStore } from "../model/useEditCommentDialogStore"
-import { useState } from "react"
-import useComment from "../model/useComment"
+import { useEffect, useState } from "react"
+import useUpdateCommentQuery from "../model/useUpdateCommentQuery"
 
 const EditCommentDialog = ({}: {}) => {
   const showEditCommentDialog = useEditCommentDialogStore((state) => state.showDialog)
   const setShowEditCommentDialog = useEditCommentDialogStore((state) => state.setShowDialog)
   const selectedComment = useEditCommentDialogStore((state) => state.selectedComment)
-  const { updateComment } = useComment()
+  const { updateComment } = useUpdateCommentQuery()
 
   const [newComment, setNewComment] = useState<Comment>(selectedComment!)
 
+  useEffect(() => {
+    setNewComment(selectedComment!)
+  }, [selectedComment])
+
   const handleUpdateComment = () => {
-    updateComment(newComment)
+    updateComment({ comment: newComment })
     setShowEditCommentDialog(false)
   }
 

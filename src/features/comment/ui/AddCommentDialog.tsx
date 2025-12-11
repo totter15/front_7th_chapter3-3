@@ -2,10 +2,10 @@ import { useState } from "react"
 import { Dialog, Textarea, Button } from "../../../shared/ui/index"
 import { AddCommentRequest } from "../../../entities/comment/model/comment"
 import { useAddCommentDialogStore } from "../model/useAddCommentDialogStore"
-import useComment from "../model/useComment"
+import useAddCommentQuery from "../model/useAddCommentQuery"
 
 const AddCommentDialog = ({ postId }: { postId: number }) => {
-  const { addComment } = useComment()
+  const { addComment } = useAddCommentQuery()
   const showAddCommentDialog = useAddCommentDialogStore((state) => state.showDialog)
   const setShowAddCommentDialog = useAddCommentDialogStore((state) => state.setShowDialog)
 
@@ -16,7 +16,7 @@ const AddCommentDialog = ({ postId }: { postId: number }) => {
   })
 
   const handleAddComment = () => {
-    addComment(newComment)
+    addComment({ comment: newComment })
     setShowAddCommentDialog(false)
     setNewComment({ body: "", postId, userId: 1 })
   }

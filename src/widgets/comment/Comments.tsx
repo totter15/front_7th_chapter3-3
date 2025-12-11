@@ -1,10 +1,11 @@
 import { Button } from "../../shared/ui/index"
 import { Plus } from "lucide-react"
-import { Comment } from "../../entities/comment/model/comment"
 import CommentItem from "./CommentItem"
 import { useAddCommentDialogStore } from "../../features/comment/model/useAddCommentDialogStore"
+import useCommentsQuery from "../../entities/comment/model/useCommentsQuery"
 
-const Comments = ({ comments }: { comments: Comment[] }) => {
+const Comments = ({ postId }: { postId: number }) => {
+  const { data: comments } = useCommentsQuery(postId)
   const setShowAddCommentDialog = useAddCommentDialogStore((state) => state.setShowDialog)
 
   const handleAddComment = () => {
