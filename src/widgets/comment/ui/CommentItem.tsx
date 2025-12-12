@@ -1,21 +1,22 @@
-import { Comment } from "../../entities/comment/model/comment"
-import HighlightText from "../../shared/ui/HighlightText"
-import { Button } from "../../shared/ui"
+import { Comment } from "../../../entities/comment/model/comment"
+import HighlightText from "../../../shared/ui/HighlightText"
+import { Button } from "../../../shared/ui"
 import { ThumbsUp } from "lucide-react"
 import { Edit2 } from "lucide-react"
 import { Trash2 } from "lucide-react"
-import usePostParams from "../../features/post/model/usePostParams"
-import useLikeCommentQuery from "../../features/comment/model/useLikeCommentQuery"
-import useDeleteCommentQuery from "../../features/comment/model/useDeleteCommentQuery"
-import { useEditCommentDialogStore } from "../../features/comment/model/useEditCommentDialogStore"
+import usePostParams from "../../../entities/post/model/usePostParams"
+import useLikeCommentQuery from "../../../features/comment/model/useLikeCommentQuery"
+import useDeleteCommentQuery from "../../../features/comment/model/useDeleteCommentQuery"
+import { useEditCommentDialogStore } from "../../../features/comment/model/useEditCommentDialogStore"
+import { useSelectedCommentStore } from "../../../entities/comment/model/useSelectedCommentStore"
 
 const CommentItem = ({ comment }: { comment: Comment }) => {
   const { params } = usePostParams()
   const { likeComment } = useLikeCommentQuery()
   const { deleteComment } = useDeleteCommentQuery()
 
-  const setShowEditDialog = useEditCommentDialogStore((state) => state.setShowDialog)
-  const setSelectedComment = useEditCommentDialogStore((state) => state.setSelectedComment)
+  const openEditCommentDialog = useEditCommentDialogStore((state) => state.openEditCommentDialog)
+  const setSelectedComment = useSelectedCommentStore((state) => state.setSelectedComment)
 
   const handleLikeComment = () => {
     likeComment({ id: comment.id, postId: comment.postId, likes: comment.likes + 1 })
@@ -23,7 +24,7 @@ const CommentItem = ({ comment }: { comment: Comment }) => {
 
   const handleEditComment = () => {
     setSelectedComment(comment)
-    setShowEditDialog(true)
+    openEditCommentDialog()
   }
   const handleDeleteComment = () => {
     deleteComment({ id: comment.id, postId: comment.postId })

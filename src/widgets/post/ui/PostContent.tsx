@@ -1,21 +1,13 @@
-import usePostParams from "../../features/post/model/usePostParams"
-import { Input, Button } from "../../shared/ui"
-import { Select } from "../../shared/ui"
+import usePostParams from "../../../entities/post/model/usePostParams"
+import { Input, Button } from "../../../shared/ui"
+import { Select } from "../../../shared/ui"
 import { Search } from "lucide-react"
-import PostTable from "./PostTable"
-import { Post } from "../../entities/post/model/post"
-import { User } from "../../entities/user/model/user"
-import usePostWithParams from "../../features/post/model/usePostWithParams"
+import PostTable from "../ui/PostTable"
+import usePostWithParams from "../../../entities/post/model/usePostWithParams"
 import { useEffect, useState } from "react"
-import useTagQuery from "../../entities/tag/model/useTagQuery"
+import useTagQuery from "../../../entities/tag/model/useTagQuery"
 
-const PostContent = ({
-  openPostDetail,
-  openUserModal,
-}: {
-  openPostDetail: (post: Post) => void
-  openUserModal: (user: User) => void
-}) => {
+const PostContent = () => {
   const { data: tags = [] } = useTagQuery()
   const { data: posts, isLoading } = usePostWithParams()
   const { params: postParams, updateParams: updatePostParams } = usePostParams()
@@ -38,7 +30,7 @@ const PostContent = ({
               className="pl-8"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && updatePostParams({ searchQuery: searchQuery })}
+              onKeyDown={(e) => e.key === "Enter" && updatePostParams({ searchQuery: searchQuery })}
             />
           </div>
         </div>
@@ -85,11 +77,7 @@ const PostContent = ({
       </div>
 
       {/* 게시물 테이블 */}
-      {isLoading ? (
-        <div className="flex justify-center p-4">로딩 중...</div>
-      ) : (
-        <PostTable posts={posts.posts} openPostDetail={openPostDetail} openUserModal={openUserModal} />
-      )}
+      {isLoading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable posts={posts.posts} />}
 
       {/* 페이지네이션 */}
       <div className="flex justify-between items-center">

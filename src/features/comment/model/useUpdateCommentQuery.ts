@@ -8,10 +8,10 @@ const useUpdateCommentQuery = () => {
 
   const { mutate: updateComment, ...rest } = useMutation<Comment, Error, { comment: Comment }>({
     mutationFn: ({ comment }: { comment: Comment }) => updateCommentApi({ comment }),
-    onSuccess: (data) => {
+    onMutate: ({ comment }: { comment: Comment }) => {
       queryClient.setQueryData(
-        [COMMENTS_QUERY_KEY, data.postId],
-        (old: any) => old.map((c: Comment) => (c.id === data.id ? data : c)) as Comment[],
+        [COMMENTS_QUERY_KEY, comment.postId],
+        (old: any) => old.map((c: Comment) => (c.id === comment.id ? comment : c)) as Comment[],
       )
     },
   })

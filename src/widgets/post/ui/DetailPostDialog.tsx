@@ -1,23 +1,20 @@
-import { Dialog } from "../../shared/ui"
-import HighlightText from "../../shared/ui/HighlightText"
-import Comments from "../../widgets/comment/Comments"
-import { useSelectedPostStore } from "../../features/post/model/useSelectedPostStore"
-import usePostParams from "../../features/post/model/usePostParams"
+import { Dialog } from "../../../shared/ui"
+import HighlightText from "../../../shared/ui/HighlightText"
+import Comments from "../../comment/ui/Comments"
+import { useSelectedPostStore } from "../../../entities/post/model/useSelectedPostStore"
+import usePostParams from "../../../entities/post/model/usePostParams"
+import { useDetailPostDialogStore } from "../../../features/post/model/useDetailPostDialogStore"
 
-const DetailPostDialog = ({
-  showPostDetailDialog,
-  setShowPostDetailDialog,
-}: {
-  showPostDetailDialog: boolean
-  setShowPostDetailDialog: (show: boolean) => void
-}) => {
+const DetailPostDialog = () => {
   const { params } = usePostParams()
   const selectedPost = useSelectedPostStore((state) => state.selectedPost)
+  const showDialog = useDetailPostDialogStore((state) => state.showDialog)
+  const setShowDialog = useDetailPostDialogStore((state) => state.setShowDialog)
 
   if (!selectedPost) return <></>
 
   return (
-    <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
+    <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <Dialog.Content className="max-w-3xl">
         <Dialog.Header>
           <Dialog.Title>

@@ -3,11 +3,12 @@ import { Comment } from "../../../entities/comment/model/comment"
 import { useEditCommentDialogStore } from "../model/useEditCommentDialogStore"
 import { useEffect, useState } from "react"
 import useUpdateCommentQuery from "../model/useUpdateCommentQuery"
+import { useSelectedCommentStore } from "../../../entities/comment/model/useSelectedCommentStore"
 
 const EditCommentDialog = ({}: {}) => {
   const showEditCommentDialog = useEditCommentDialogStore((state) => state.showDialog)
   const setShowEditCommentDialog = useEditCommentDialogStore((state) => state.setShowDialog)
-  const selectedComment = useEditCommentDialogStore((state) => state.selectedComment)
+  const selectedComment = useSelectedCommentStore((state) => state.selectedComment)
   const { updateComment } = useUpdateCommentQuery()
 
   const [newComment, setNewComment] = useState<Comment>(selectedComment!)

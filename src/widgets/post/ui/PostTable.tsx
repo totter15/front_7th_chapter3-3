@@ -1,31 +1,15 @@
-import { Table, Button } from "../../shared/ui/index"
-import { Post } from "../../entities/post/model/post"
-import HighlightText from "../../shared/ui/HighlightText"
+import { Table, Button } from "../../../shared/ui/index"
+import { Post } from "../../../entities/post/model/post"
+import HighlightText from "../../../shared/ui/HighlightText"
 import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react"
-import { User } from "../../entities/user/model/user"
-import { useSelectedPostStore } from "../../features/post/model/useSelectedPostStore"
-import { useEditPostDialogStore } from "../../features/post/model/useEditPostDialogStore"
-import usePostParams from "../../features/post/model/usePostParams"
-import useDeletePostQuery from "../../features/post/model/useDeletePostQuery"
+import usePostTable from "../model/usePostTable"
+import { useDetailPostDialogStore } from "../../../features/post/model/useDetailPostDialogStore"
+import { useSelectedPostStore } from "../../../entities/post/model/useSelectedPostStore"
 
-const PostTable = ({
-  posts,
-  openPostDetail,
-  openUserModal,
-}: {
-  posts: Post[]
-  openPostDetail: (post: Post) => void
-  openUserModal: (user: User) => void
-}) => {
-  const { params, updateParams } = usePostParams()
+const PostTable = ({ posts }: { posts: Post[] }) => {
+  const { openUserDialog, openEditPostDialog, deletePost, searchTagPosts, searchTag } = usePostTable()
+  const openDetailPostDialog = useDetailPostDialogStore((state) => state.openDetailPostDialog)
   const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost)
-  const setShowEditDialog = useEditPostDialogStore((state) => state.setShowDialog)
-  const { mutate: deletePost } = useDeletePostQuery()
-
-  const handleSetSelectedPost = (post: Post) => {
-    setSelectedPost(post)
-    setShowEditDialog(true)
-  }
 
   return (
     <Table>
@@ -46,7 +30,7 @@ const PostTable = ({
             <Table.Cell>
               <div className="space-y-1">
                 <div>
-                  <HighlightText text={post.title} highlight={params.searchQuery} />
+                  <HighlightText text={post.title} highlight={searchTag} />
                 </div>
 
                 <div className="flex flex-wrap gap-1">
@@ -54,12 +38,12 @@ const PostTable = ({
                     <span
                       key={tag}
                       className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                        params.selectedTag === tag
+                        searchTag === tag
                           ? "text-white bg-blue-500 hover:bg-blue-600"
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
                       onClick={() => {
-                        updateParams({ selectedTag: tag })
+                        searchTagPosts(tag)
                       }}
                     >
                       {tag}
@@ -69,10 +53,7 @@ const PostTable = ({
               </div>
             </Table.Cell>
             <Table.Cell>
-              <div
-                className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => openUserModal(post.author as User)}
-              >
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserDialog(post.userId)}>
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
@@ -87,10 +68,17 @@ const PostTable = ({
             </Table.Cell>
             <Table.Cell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedPost(post)
+                    openDetailPostDialog()
+                  }}
+                >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleSetSelectedPost(post)}>
+                <Button variant="ghost" size="sm" onClick={() => openEditPostDialog(post)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => deletePost({ id: post.id })}>

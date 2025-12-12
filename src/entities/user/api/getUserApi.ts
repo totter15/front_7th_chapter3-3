@@ -4,6 +4,7 @@ import { getApiUrl } from "../../../shared/api/apiClient"
 
 const getUserApi = async ({ id }: { id: number }): Promise<User | undefined> => {
   try {
+    if (!id) return undefined
     const response = await fetch(getApiUrl(`/users/${id}`))
     const data = await response.json()
     return mapUserDtoToUser(data)

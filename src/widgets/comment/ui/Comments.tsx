@@ -1,21 +1,18 @@
-import { Button } from "../../shared/ui/index"
+import { Button } from "../../../shared/ui/index"
 import { Plus } from "lucide-react"
 import CommentItem from "./CommentItem"
-import { useAddCommentDialogStore } from "../../features/comment/model/useAddCommentDialogStore"
-import useCommentsQuery from "../../entities/comment/model/useCommentsQuery"
+import { useAddCommentDialogStore } from "../../../features/comment/model/useAddCommentDialogStore"
+import useCommentsQuery from "../../../entities/comment/model/useCommentsQuery"
 
 const Comments = ({ postId }: { postId: number }) => {
   const { data: comments } = useCommentsQuery(postId)
-  const setShowAddCommentDialog = useAddCommentDialogStore((state) => state.setShowDialog)
+  const openAddCommentDialog = useAddCommentDialogStore((state) => state.openAddCommentDialog)
 
-  const handleAddComment = () => {
-    setShowAddCommentDialog(true)
-  }
   return (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-semibold">댓글</h3>
-        <Button size="sm" onClick={handleAddComment}>
+        <Button size="sm" onClick={openAddCommentDialog}>
           <Plus className="w-3 h-3 mr-1" />
           댓글 추가
         </Button>

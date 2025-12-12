@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import getPostsApi from "../api/getPostsApi"
-import { PostParams } from "../../../features/post/model/usePostParams"
+import { PostParams } from "./usePostParams"
 
 export const POST_QUERY_KEY = "posts"
 

@@ -13,10 +13,10 @@ const useDeleteCommentQuery = () => {
 
   const { mutate: deleteComment, ...rest } = useMutation<void, Error, DeleteCommentParams>({
     mutationFn: ({ id }: DeleteCommentParams) => deleteCommentApi({ id }),
-    onSuccess: (_, variables) => {
+    onMutate: ({ id, postId }: DeleteCommentParams) => {
       queryClient.setQueryData(
-        [COMMENTS_QUERY_KEY, variables.postId],
-        (old: any) => old.filter((c: Comment) => c.id !== variables.id) as Comment[],
+        [COMMENTS_QUERY_KEY, postId],
+        (old: any) => old.filter((c: Comment) => c.id !== id) as Comment[],
       )
     },
   })

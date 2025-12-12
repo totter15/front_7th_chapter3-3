@@ -1,14 +1,13 @@
 import { create } from "zustand"
-import { User } from "./user"
 
 interface SelectedUserStore {
-  selectedUser: User | null
-  setSelectedUser: (user: User | null) => void
+  selectedUserId: number | null
+  setSelectedUserId: (userId: number) => void
 }
 
 const useSelectedUserStore = create<SelectedUserStore>((set) => ({
-  selectedUser: null,
-  setSelectedUser: (user: User | null) => set({ selectedUser: user }),
+  selectedUserId: null,
+  setSelectedUserId: (userId: number) => set({ selectedUserId: userId }),
 }))
 
 export default useSelectedUserStore

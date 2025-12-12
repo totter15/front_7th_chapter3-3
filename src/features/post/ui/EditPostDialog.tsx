@@ -1,7 +1,7 @@
 import { Dialog, Input, Textarea, Button } from "../../../shared/ui"
 import { Post } from "../../../entities/post/model/post"
 import { useEffect, useState } from "react"
-import { useSelectedPostStore } from "../model/useSelectedPostStore"
+import { useSelectedPostStore } from "../../../entities/post/model/useSelectedPostStore"
 import { useEditPostDialogStore } from "../model/useEditPostDialogStore"
 import useEditPostQuery from "../model/useEditPostQuery"
 
