@@ -1,4 +1,4 @@
-import usePostParams from "../../../entities/post/model/usePostParams"
+import usePostParams from "./usePostParams"
 import usePostsQuery from "../../../entities/post/model/usePostQuery"
 import useSearchPostsQuery from "../../../entities/post/model/useSearchPostsQuery"
 import useTagPostsQuery from "../../../entities/post/model/useTagPostsQuery"
@@ -32,3 +32,4 @@ const usePostWithParams = () => {
 }
 
 export default usePostWithParams
+

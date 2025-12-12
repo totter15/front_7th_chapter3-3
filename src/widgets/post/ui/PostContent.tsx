@@ -1,11 +1,15 @@
-import usePostParams from "../../../entities/post/model/usePostParams"
+import { useEffect, useState } from "react"
+
+import { Search } from "lucide-react"
 import { Input, Button } from "../../../shared/ui"
 import { Select } from "../../../shared/ui"
-import { Search } from "lucide-react"
-import PostTable from "../ui/PostTable"
-import usePostWithParams from "../../../entities/post/model/usePostWithParams"
-import { useEffect, useState } from "react"
+
 import useTagQuery from "../../../entities/tag/model/useTagQuery"
+
+import usePostParams from "../../../features/post/model/usePostParams"
+import usePostWithParams from "../../../features/post/model/usePostWithParams"
+
+import PostTable from "../ui/PostTable"
 
 const PostContent = () => {
   const { data: tags = [] } = useTagQuery()

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import getSearchPostsApi from "../api/getSearchPostsApi"
 import getUsersApi from "../../user/api/getUsersApi"
 import { POST_QUERY_KEY } from "./usePostQuery"
-import { PostParams } from "./usePostParams"
+import { PostParams } from "./post"
 
 const useSearchPostsQuery = (params: PostParams, enabled: boolean = true) => {
   return useQuery({

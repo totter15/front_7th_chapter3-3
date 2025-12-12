@@ -13,3 +13,4 @@ export const useDetailPostDialogStore = create<DetailPostDialogStore>((set) => (
   closeDetailPostDialog: () => set({ showDialog: false }),
   setShowDialog: (show: boolean) => set({ showDialog: show }),
 }))
+

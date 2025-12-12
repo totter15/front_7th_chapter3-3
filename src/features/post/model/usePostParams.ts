@@ -1,14 +1,8 @@
 import { useCallback, useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
+import { PostParams } from "../../../entities/post/model/post"
 
-export interface PostParams {
-  skip: number
-  limit: number
-  searchQuery: string
-  sortBy: string
-  sortOrder: string
-  selectedTag: string
-}
+export type { PostParams }
 
 const usePostParams = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -46,3 +40,4 @@ const usePostParams = () => {
 }
 
 export default usePostParams
+

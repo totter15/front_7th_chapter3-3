@@ -28,3 +28,12 @@ export interface AddPostRequest {
   body: string
   userId: number
 }
+
+export interface PostParams {
+  skip: number
+  limit: number
+  searchQuery: string
+  sortBy: string
+  sortOrder: string
+  selectedTag: string
+}

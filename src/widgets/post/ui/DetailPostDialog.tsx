@@ -2,8 +2,8 @@ import { Dialog } from "../../../shared/ui"
 import HighlightText from "../../../shared/ui/HighlightText"
 import Comments from "../../comment/ui/Comments"
 import { useSelectedPostStore } from "../../../entities/post/model/useSelectedPostStore"
-import usePostParams from "../../../entities/post/model/usePostParams"
-import { useDetailPostDialogStore } from "../../../features/post/model/useDetailPostDialogStore"
+import usePostParams from "../../../features/post/model/usePostParams"
+import { useDetailPostDialogStore } from "../model/useDetailPostDialogStore"
 
 const DetailPostDialog = () => {
   const { params } = usePostParams()

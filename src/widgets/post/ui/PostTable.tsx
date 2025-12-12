@@ -1,15 +1,14 @@
-import { Table, Button } from "../../../shared/ui/index"
-import { Post } from "../../../entities/post/model/post"
-import HighlightText from "../../../shared/ui/HighlightText"
 import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react"
+
+import { Table, Button } from "../../../shared/ui/index"
+import HighlightText from "../../../shared/ui/HighlightText"
+
+import { Post } from "../../../entities/post/model/post"
 import usePostTable from "../model/usePostTable"
-import { useDetailPostDialogStore } from "../../../features/post/model/useDetailPostDialogStore"
-import { useSelectedPostStore } from "../../../entities/post/model/useSelectedPostStore"
 
 const PostTable = ({ posts }: { posts: Post[] }) => {
-  const { openUserDialog, openEditPostDialog, deletePost, searchTagPosts, searchTag } = usePostTable()
-  const openDetailPostDialog = useDetailPostDialogStore((state) => state.openDetailPostDialog)
-  const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost)
+  const { openUserDialog, openDetailPostDialog, openEditPostDialog, deletePost, searchTagPosts, searchTag } =
+    usePostTable()
 
   return (
     <Table>
@@ -68,14 +67,7 @@ const PostTable = ({ posts }: { posts: Post[] }) => {
             </Table.Cell>
             <Table.Cell>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedPost(post)
-                    openDetailPostDialog()
-                  }}
-                >
+                <Button variant="ghost" size="sm" onClick={() => openDetailPostDialog(post)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => openEditPostDialog(post)}>
