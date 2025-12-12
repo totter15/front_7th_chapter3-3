@@ -3,12 +3,14 @@ import Header from "./shared/ui/Header.tsx"
 import Footer from "./shared/ui/Footer.tsx"
 import PostsManagerPage from "./pages/PostManager/PostsManagerPage.tsx"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const App = () => {
   const queryClient = new QueryClient()
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <Router>
         <div className="flex flex-col min-h-screen">
           <Header />
