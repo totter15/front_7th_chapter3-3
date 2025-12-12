@@ -16,6 +16,10 @@ const useAddPostQuery = () => {
         posts: [data, ...old.posts],
       }))
     },
+    onError: (error) => {
+      console.error("게시물 추가 중 오류 발생:", error)
+      alert(`게시물 추가에 실패했습니다: ${error.message}`)
+    },
   })
   return { addPost }
 }
